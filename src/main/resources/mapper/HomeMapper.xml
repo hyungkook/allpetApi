@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.home.allpet.api.mapper.HomeMapper">
+
+	<select id="getSidbyDomain" parameterType="string" resultType="hashmap">
+		SELECT 
+			S_DOMAIN,
+			S_SID,
+			S_HOMEPAGE_LOC,
+			S_HOSPITAL_ID
+		FROM DB_ALLPET.pet_home_basic_info
+		WHERE S_DOMAIN = #{value} 
+	</select>
+	
+	<select id="getHomeInfo" parameterType="string" resultType="hashmap">
+		SELECT
+			BI.s_sid,
+			BI.s_s_sid,
+			BI.s_hospital_name,
+			BI.s_hospital_id,
+			BI.s_hospital_pw,
+			BI.s_status,
+			BI.d_reg_date,
+			BI.s_reg_user,
+			BI.d_update_date,
+			BI.s_update_user,
+			BI.s_president,
+			BI.s_corp_reg_number,
+			BI.s_company_name,
+			MI.s_introduce,
+			MI.s_shortIntroduce,
+			MI.s_keyword,
+			MI.s_display_tel,
+			MI.s_tel,
+			MI.s_parking_info,
+			MI.s_credit_info,
+			MI.s_email,
+			MI.s_fax,
+			MI.s_represent_staff,
+			MI.s_hospital_name_use,
+			(
+				SELECT
+					s_name
+				FROM
+					DB_ALLPET.T_STAFF_INFO
+				WHERE
+					S_STID = MI.s_represent_staff 
+			) s_represent_staff_name,
+			(
+				SELECT
+					COUNT(*)
+				FROM
+					DB_ALLPET.T_STAFF_INFO
+				WHERE
+					S_SID = #{value}
+					AND S_STATE = 'Y'
+			) s_staff_count
+		FROM
+			DB_ALLPET.T_HOSPITAL_BASIC_INFO BI, DB_ALLPET.T_HOSPITAL_MORE_INFO MI
+		WHERE
+			BI.S_SID = MI.S_SID
+			AND BI.S_SID = #{value}
+	</select>
+	
+	<select id="getInfo" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			s_id,
+			s_group,
+			s_lcode,
+			s_mcode,
+			s_scode,
+			s_type, 
+			CASE WHEN S_TYPE = 'SVAL' THEN S_SVAL
+			WHEN S_TYPE = 'LVAL' THEN S_LVAL
+			ELSE S_STATUS
+			END AS s_val,
+			s_status,
+			CASE WHEN N_LV = 1 THEN S_GROUP
+			WHEN N_LV = 2 THEN S_LCODE
+			WHEN N_LV = 3 THEN S_MCODE
+			WHEN N_LV = 4 THEN S_SCODE
+			ELSE ''
+			END AS s_name
+		FROM
+			DB_ALLPET.T_HOSPITAL_STATUS_INFO
+		WHERE
+			S_ID = #{ssid}
+			<if test='group != null and !group.equals("")'>
+			AND S_GROUP = #{group}
+			</if>
+			<if test='lcode != null and !lcode.equals("")'>
+			AND S_LCODE = #{lcode}
+			</if>
+			<if test='mcode != null and !mcode.equals("")'>
+			AND S_MCODE = #{mcode}
+			</if>
+			<if test='scode != null and !scode.equals("")'>
+			AND S_SCODE = #{scode}
+			</if>
+	</select>
+	
+	<select id="getAddressInfo" parameterType="string" resultType="hashmap">
+		SELECT
+			(SELECT s_hospital_name FROM DB_ALLPET.T_HOSPITAL_BASIC_INFO WHERE S_SID = #{value}) s_hospital_name,
+			BI.s_old_addr_sido,
+			BI.s_old_addr_sigungu,
+			BI.s_old_addr_dong,
+			BI.s_old_addr_etc,
+			BI.s_old_zipcode,
+			BI.n_latitude,
+			BI.n_longitude,
+			MI.s_display_tel,
+			MI.s_tel
+		FROM
+			DB_ALLPET.T_HOSPITAL_ADDRESS BI
+			LEFT OUTER JOIN
+			DB_ALLPET.T_HOSPITAL_MORE_INFO MI
+			ON BI.S_SID = MI.S_SID
+		WHERE
+			BI.S_SID = #{ssid}
+	</select>
+	
+	<select id="getWorkingTime" parameterType="string" resultType="hashmap">
+		SELECT
+			s_sid,
+			n_index,
+			s_name,
+			s_start_time,
+			s_end_time,
+			s_alltime,
+			s_dayoff,
+			s_comment
+		FROM
+			DB_ALLPET.T_HOSPITAL_WORKING_TIME
+		WHERE
+			S_SID = #{ssid}
+	</select>
+	
+	<select id="getImageByKey" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			s_iid,
+			s_image_path
+		FROM
+			DB_ALLPET.T_IMAGE
+		WHERE
+			S_SID = #{ssid}
+			AND S_LKEY = #{imageKey}
+		ORDER BY N_INDEX
+	</select>
+	
+</mapper>
