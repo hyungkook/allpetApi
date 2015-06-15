@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.home.allpet.api.mapper.HomeStaffMapper">
+	<select id="getByParent" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			A.s_cmid,
+			A.s_parent,
+			A.s_status,
+			A.s_group,
+			A.s_value,
+			A.s_name
+		FROM
+			DB_ALLPET.T_CUSTOMIZE A
+		WHERE
+			A.S_ID = #{ssid}
+			AND A.S_PARENT = #{parent}
+			<if test='group!=null and !group.equals("")'>
+			AND A.S_GROUP = #{group}
+			</if>
+			<if test='status!=null and !status.equals("")'>
+			AND S_STATUS = #{status}
+			</if>
+			<if test='visible!=null and !visible.equals("")'>
+			AND S_VISIBLE = #{visible}
+			</if>
+		ORDER BY
+			A.N_INDEX ASC
+	</select>	
+	
+	<select id="getStaffList" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			s_stid,
+			s_sid,
+			s_category,
+			s_name,
+			s_position,
+			n_index,
+			s_state,
+			s_working_time,
+			s_specialty,
+			s_iid,
+			(
+				SELECT
+					s_image_path
+				FROM
+					DB_ALLPET.T_IMAGE
+				WHERE
+					S_IID = A.S_IID
+			) AS image_path
+		FROM
+			DB_ALLPET.T_STAFF_INFO A
+		WHERE
+			<if test="category != null and !category.equals('')">
+			S_CATEGORY = #{category} AND
+			</if>
+			S_SID = #{ssid}
+			AND S_STATE = 'Y'
+		ORDER BY N_INDEX ASC
+		<if test="startRow != null and !startRow.equals('')">
+		LIMIT ${startRow}, ${endRow}
+		</if>
+	</select>
+	
+	<select id="getStaffPastList" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			s_stid,
+			s_type,
+			n_index,
+			DATE_FORMAT(d_start_date, '%Y') as d_start_date ,
+			DATE_FORMAT(d_end_date, '%Y') as d_end_date ,
+			s_desc
+		FROM
+			DB_ALLPET.T_STAFF_PAST_INFO
+		WHERE
+			S_STID = #{stid}
+		ORDER BY N_INDEX ASC
+	</select>
+</mapper>
