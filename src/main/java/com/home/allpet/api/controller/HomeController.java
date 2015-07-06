@@ -25,15 +25,6 @@ public class HomeController {
 	@Autowired
 	HomeService homeService;
 
-	@RequestMapping(value = "/testUriCall", method = RequestMethod.GET)
-	@ResponseBody
-	public ResponseEntity<Object> testUri() throws Exception {
-		URI uri = new URI("http://220.90.216.70/openp/index.html#/event");
-	    HttpHeaders httpHeaders = new HttpHeaders();
-	    httpHeaders.setLocation(uri);
-	    return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
-	}
-	
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<Object> home(HttpServletRequest request) throws Exception {
