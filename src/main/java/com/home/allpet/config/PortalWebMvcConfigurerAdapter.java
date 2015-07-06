@@ -1,5 +1,6 @@
 package com.home.allpet.config;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,11 +8,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -24,7 +27,7 @@ public class PortalWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter {
 
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/").addResourceLocations("/resources/**");
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
     }
 	
 	@Override
@@ -75,8 +78,16 @@ public class PortalWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter {
     */
 	
 	@Bean
-	public MultipartResolver multipartResolver() {
-		return new StandardServletMultipartResolver();
+	public CommonsMultipartResolver multipartResolver() {
+		CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
+		commonsMultipartResolver.setDefaultEncoding("utf-8");
+		commonsMultipartResolver.setMaxUploadSize(1024 * 1024 * 200);
+		FileSystemResource fileSystemResource = new FileSystemResource("/tmp/");
+		try {
+			commonsMultipartResolver.setUploadTempDir(fileSystemResource);
+		} catch (IOException e) {
+		}
+		return commonsMultipartResolver;
 	}
 	
 	@Bean

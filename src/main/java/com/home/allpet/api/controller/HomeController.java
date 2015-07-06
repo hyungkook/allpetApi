@@ -24,7 +24,7 @@ public class HomeController {
 	
 	@Autowired
 	HomeService homeService;
-
+	
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<Object> home(HttpServletRequest request) throws Exception {
