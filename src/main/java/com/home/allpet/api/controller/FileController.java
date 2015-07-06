@@ -99,9 +99,9 @@ public class FileController {
 			sFileInfo += "&bNewLine=true";
 			// img 태그의 title 속성을 원본파일명으로 적용시켜주기 위함
 			sFileInfo += "&sFileName="+ filename;;
-			System.out.println(request.getRequestURI());
-			System.out.println(request.getRequestURL());
-			String serverUrl = "";
+			StringBuffer bf = request.getRequestURL();
+			int lastIndex = bf.indexOf("/v1/multiplePhotoUpload");
+			String serverUrl = bf.substring(0,lastIndex);
 			sFileInfo += "&sFileURL=" + serverUrl +"/resource/photo_upload/"+realFileNm;
 			PrintWriter print = response.getWriter();
 			print.print(sFileInfo);
