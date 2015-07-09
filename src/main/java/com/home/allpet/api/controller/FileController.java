@@ -102,7 +102,13 @@ public class FileController {
 			StringBuffer bf = request.getRequestURL();
 			int lastIndex = bf.indexOf("/v1/multiplePhotoUpload");
 			String serverUrl = bf.substring(0,lastIndex);
-			sFileInfo += "&sFileURL=" + serverUrl +"/resource/photo_upload/"+realFileNm;
+			
+			String domain = request.getHeader("referer");//request.getRequestURL().toString();
+			
+			domain = domain.replace("http://", "");
+			domain = domain.substring(0, domain.indexOf("/"));
+			
+			sFileInfo += "&sFileURL=" + serverUrl + File.separator + "resource"+ File.separator +"photo_upload" + File.separator +realFileNm;
 			PrintWriter print = response.getWriter();
 			print.print(sFileInfo);
 			print.flush();

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.home.allpet.api.mapper.HomeBoardMapper">
+	<select id="getBoardList" parameterType="Map" resultType="com.home.allpet.api.model.BoardVo">
+		select * 
+		from DB_ALLPET.tb_board
+		where  	board_type = #{boardType}
+		and		board_ssid = #{boardSsid}
+	</select>
+	<insert id="insertBoard" parameterType="com.home.allpet.api.model.BoardVo">
+    	INSERT INTO DB_ALLPET.tb_board 
+    		(
+	    		username,
+				passwd,
+				email,
+				title,
+				content,
+				reg_date,
+				rcount,
+				master_Seq,
+				reply_num,
+				step,
+				board_ssid,
+				board_type
+    		)
+    	VALUES 
+    		( 	
+    			#{username},	
+				#{passwd},		
+				#{email},		
+				#{title},		
+				#{content},		
+				now(), 	
+				#{rcount},			
+				#{masterSeq},		
+				#{replyNum},		
+				#{step},			
+				#{boardSsid},	
+				#{boardType}
+    		)
+    </insert>
+</mapper>

@@ -48,4 +48,9 @@ public class Codes {
 	public static String STATUS_INFO_GROUP_STAFF = "STAFF";
 	public static String STATUS_INFO_LCODE_ADDRESS = "ADDRESS";
 	public static String STATUS_INFO_LCODE_INFO = "INFO";
+	
+	
+	public static String BOARD_TYPE_NOTICE = "01";	// 공지사항
+	
+	
 }
