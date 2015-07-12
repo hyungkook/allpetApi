@@ -2,10 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.home.allpet.api.mapper.HomeBoardMapper">
 	<select id="getBoardList" parameterType="Map" resultType="com.home.allpet.api.model.BoardVo">
-		select * 
+		select 
+			board_Seq,
+			username,
+			passwd,
+			email,
+			title,
+			content,
+			date_format(reg_date,'%Y-%m-%d') as reg_date,
+			rcount,
+			master_Seq,
+			reply_num,
+			step,
+			board_ssid,
+			board_type 
 		from DB_ALLPET.tb_board
 		where  	board_type = #{boardType}
 		and		board_ssid = #{boardSsid}
+		and		deleteYn = 'N'
+		<if test="pageNum != null and !pageNum.equals('')">
+		LIMIT ${pageNum}, ${pageCon}
+		</if>
+	</select>
+	<select id="getBoardListTotalCnt" parameterType="Map" resultType="int">
+		select
+			count('x') 
+		from DB_ALLPET.tb_board
+		where  	board_type = #{boardType}
+		and		board_ssid = #{boardSsid}
+		and		deleteYn = 'N'
+	</select>
+	<select id="getBoardByBoardSeq" parameterType="Long" resultType="com.home.allpet.api.model.BoardVo">
+		select
+			*
+		from DB_ALLPET.tb_board
+		where  	board_Seq = #{boardSeq}
 	</select>
 	<insert id="insertBoard" parameterType="com.home.allpet.api.model.BoardVo">
     	INSERT INTO DB_ALLPET.tb_board 
@@ -39,4 +70,33 @@
 				#{boardType}
     		)
     </insert>
+    <update id="updateBoard" parameterType="com.home.allpet.api.model.BoardVo" >
+        update DB_ALLPET.tb_board
+        	set title = #{title}
+        	<if test="content != null and !content.equals('')">
+        		, content = #{content}
+			</if>
+        	<if test="username != null and !username.equals('')">
+        		, username = #{username}
+			</if>
+        	<if test="passwd != null and !passwd.equals('')">
+        		, passwd = #{passwd}
+			</if>
+        	<if test="email != null and !email.equals('')">
+        		, email = #{email}
+			</if>
+        where  	board_Seq = #{boardSeq}
+    </update>
+    <update id="increaseRCount" parameterType="Long" >
+        update DB_ALLPET.tb_board
+        	set rcount = rcount + 1
+        where  	board_Seq = #{boardSeq}
+    </update>
+    
+    <update id="deleteBoard" parameterType="Long" >
+        update DB_ALLPET.tb_board
+        	set deleteYn = 'Y'
+        where  	board_Seq = #{boardSeq}
+    </update>
+    
 </mapper>

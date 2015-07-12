@@ -27,19 +27,35 @@ public class HomeBoardController {
 	
 	@RequestMapping(value = "/saveBoard", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> saveBoard(@RequestBody HashMap<String, Object> parameter) throws Exception {
+	public Map<String, Object> saveBoard(
+								@RequestParam String viewType,
+								@RequestParam Long boardSeq,
+								@RequestBody HashMap<String, Object> parameter) throws Exception {
+		parameter.put("viewType", viewType);
+		parameter.put("boardSeq", boardSeq);
+		
 		return homeBoardService.insertBoard(parameter);
 	}
 	
 	@RequestMapping(value = "/getBoard", method = RequestMethod.GET)
 	@ResponseBody
-	public BoardVo getBoard(@RequestParam HashMap<String, Object> parameter) throws Exception {
+	public BoardVo getBoard(
+									@RequestParam Long boardSeq,
+									@RequestParam HashMap<String, Object> parameter) throws Exception {
+		parameter.put("boardSeq", boardSeq);
 		return homeBoardService.getBoard(parameter);
+	}
+	@RequestMapping(value = "/deleteBoard", method = RequestMethod.GET)
+	@ResponseBody
+	public void deleteBoard(	@RequestParam Long boardSeq,
+									@RequestParam HashMap<String, Object> parameter) throws Exception {
+		parameter.put("boardSeq", boardSeq);
+		homeBoardService.deleteBoard(parameter);
 	}
 	
 	@RequestMapping(value = "/boardList", method = RequestMethod.GET)
 	@ResponseBody
-	public List<BoardVo> boardList(
+	public Map<String, Object> boardList(
 											@RequestParam String ssid,
 											@RequestParam String boardType,
 											@RequestParam(value="pageNum", required=false) Integer pageNum,

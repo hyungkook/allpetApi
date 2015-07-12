@@ -1,6 +1,6 @@
 package com.home.allpet.api.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class BoardVo {
 
@@ -16,6 +16,7 @@ public class BoardVo {
 	int replyNum;				// 답변글 순차번호
 	int step;						// 답변글 깊이
 	String boardSsid;			// ssid
+	String deleteYn;				// 삭제여부
 	String boardType;			// 게시판 타입
 	
 	public Long getBoardSeq() {
