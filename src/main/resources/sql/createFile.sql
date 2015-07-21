@@ -20,6 +20,7 @@ CREATE TABLE tb_board (
 	reply_num   int(3) NULL DEFAULT 0,
 	step   int(3) NULL DEFAULT 0,
 	board_ssid VARCHAR(128)  NOT NULL,
+	deleteYn VARCHAR(1)  NOT NULL default 'N',
 	board_type VARCHAR(2)  NOT NULL
 );
 

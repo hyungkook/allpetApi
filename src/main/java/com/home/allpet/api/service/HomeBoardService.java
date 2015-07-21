@@ -19,6 +19,8 @@ public class HomeBoardService {
 	HomeBoardMapper homeBoardMapper;
 	
 	public Map<String, Object> insertBoard(HashMap<String, Object> parameter){
+		String viewType = (String)parameter.get("viewType");
+		
 		BoardVo boardVo = new BoardVo();
 		boardVo.setTitle((String)parameter.get("title"));
 		boardVo.setContent((String)parameter.get("content"));
@@ -46,12 +48,24 @@ public class HomeBoardService {
 			boardVo.setStep((int)parameter.get("step"));
 		}
 		
-		homeBoardMapper.insertBoard(boardVo);
+		if( "edit".equalsIgnoreCase(viewType)){
+			Object tempBoardSeq = parameter.get("boardSeq");
+			Long boardSeq = 0L;
+			if( tempBoardSeq instanceof Long){
+				boardSeq = (Long)tempBoardSeq;
+			}else{
+				boardSeq = Long.parseLong(tempBoardSeq.toString());
+			}
+			boardVo.setBoardSeq(boardSeq);
+			homeBoardMapper.updateBoard(boardVo);	
+		}else{
+			homeBoardMapper.insertBoard(boardVo);	
+		}
 		
 		return null;
 	}
 	
-	public List<BoardVo> getBoardList(HashMap<String, Object> parameter){
+	public Map<String, Object> getBoardList(HashMap<String, Object> parameter){
 		Map<String, Object> param = new HashMap<String, Object>();
 		String ssid = (String)parameter.get("ssid");
 		param.put("boardSsid", ssid);
@@ -60,34 +74,47 @@ public class HomeBoardService {
 		}
 		
 		if( parameter.containsKey("pageNum")){
-			param.put("pageNum", parameter.get("pageNum"));
+			int pageNum = (int)parameter.get("pageNum");
+			int startRow = pageNum == 1 ? 0 : ((pageNum -1) * 10)  ;
+			param.put("pageNum", startRow);
 		}
 		if( parameter.containsKey("pageCon")){
 			param.put("pageCon", parameter.get("pageCon"));
 		}
     	
 		List<BoardVo> boardList = homeBoardMapper.getBoardList(param);
-		return boardList;
+		int total = homeBoardMapper.getBoardListTotalCnt(param);
+		
+		param.put("total", total);
+		param.put("list", boardList);
+		
+		return param;
 	}
 	
 	public BoardVo getBoard(HashMap<String, Object> parameter){
-		Map<String, Object> param = new HashMap<String, Object>();
-		String ssid = (String)parameter.get("ssid");
-		param.put("ssid", ssid);
-		if( parameter.containsKey("boardType")){
-			param.put("boardType", (String)parameter.get("boardType"));
+		Object tempBoardSeq = parameter.get("boardSeq");
+		Long boardSeq = 0L;
+		if( tempBoardSeq instanceof Long){
+			boardSeq = (Long)tempBoardSeq;
+		}else{
+			boardSeq = Long.parseLong(tempBoardSeq.toString());
 		}
 		
-		if( parameter.containsKey("pageNum")){
-			param.put("pageNum", parameter.get("pageNum"));
-		}
-		if( parameter.containsKey("pageCon")){
-			param.put("pageCon", parameter.get("pageCon"));
+		homeBoardMapper.increaseRCount(boardSeq);
+		BoardVo data = homeBoardMapper.getBoardByBoardSeq(boardSeq);
+		return data;
+	}
+	
+	public void deleteBoard(HashMap<String, Object> parameter){
+		Object tempBoardSeq = parameter.get("boardSeq");
+		Long boardSeq = 0L;
+		if( tempBoardSeq instanceof Long){
+			boardSeq = (Long)tempBoardSeq;
+		}else{
+			boardSeq = Long.parseLong(tempBoardSeq.toString());
 		}
 		
-		List<BoardVo> boardList = homeBoardMapper.getBoardList(param);
-		
-		return null;
+		homeBoardMapper.deleteBoard(boardSeq);
 	}
 	
 }
