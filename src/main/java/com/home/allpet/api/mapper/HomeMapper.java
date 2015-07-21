@@ -11,4 +11,6 @@ public interface HomeMapper {
 	public ArrayList<HashMap<String, String>> getInfo(HashMap<String, String> params);
 	public ArrayList<HashMap<String, String>> getWorkingTime(String ssid);
 	public ArrayList<HashMap<String, String>> getImageByKey(HashMap<String, String> params);
+	public ArrayList<HashMap<String, String>> getBlogRss(HashMap<String, String> params);
+	public String getSite(HashMap<String, String> params);
 }

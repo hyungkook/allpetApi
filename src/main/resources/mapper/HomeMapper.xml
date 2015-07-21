@@ -148,4 +148,27 @@
 		ORDER BY N_INDEX
 	</select>
 	
+	<select id="getBlogRss" parameterType="hashmap" resultType="hashmap">
+	select 
+		* 
+	from t_customize_info
+	where S_CMID = 
+				( SELECT
+					S_CMID
+				FROM
+					DB_ALLPET.T_CUSTOMIZE
+				WHERE	S_ID = #{ssid}
+				AND 	S_GROUP = #{blogType} )
+	</select>
+	
+	<select id="getSite" parameterType="hashmap" resultType="String">
+		SELECT
+			s_url
+		FROM
+			DB_ALLPET.t_hospital_site
+		WHERE	S_SID = #{ssid}
+			AND 	S_TYPE = #{boardType}
+			LIMIT 1
+	</select>
+	
 </mapper>

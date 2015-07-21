@@ -2,6 +2,7 @@ package com.home.allpet.api.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -13,7 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.home.allpet.api.model.FileVo;
 
@@ -21,6 +24,70 @@ import com.home.allpet.api.model.FileVo;
 @RequestMapping("/v1")
 public class FileController {
 	
+	
+	//단일파일업로드
+		@RequestMapping(value = "/photoUploads", method = RequestMethod.POST)
+		public void photoUploads(HttpServletRequest request,HttpServletResponse response, @RequestParam MultipartFile upload) throws IOException{
+		    String attach_path = "resource" + File.separator + "photo_upload" + File.separator;
+		    PrintWriter printWriter = null;
+		    String filename = "";
+		    String CKEditorFuncNum = "";
+		    if (upload != null) {
+		        filename = upload.getOriginalFilename();
+		        CKEditorFuncNum = request.getParameter("CKEditorFuncNum");
+		        try {
+		          //파일 확장자
+					String filename_ext = filename.substring(filename.lastIndexOf(".")+1);
+					//확장자를소문자로 변경
+					filename_ext = filename_ext.toLowerCase();
+					//파일 기본경로
+					String dftFilePath = request.getSession().getServletContext().getRealPath("/");
+					//파일 기본경로 _ 상세경로
+					String filePath = dftFilePath + "resource" + File.separator + "photo_upload" + File.separator;
+					File file = new File(filePath);
+					if(!file.exists()) {
+						file.mkdirs();
+					}
+					String realFileNm = "";
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+					String today= formatter.format(new java.util.Date());
+					realFileNm = today+UUID.randomUUID().toString() + filename.substring(filename.lastIndexOf("."));
+					String rlFileNm = filePath + realFileNm;
+					///////////////// 서버에 파일쓰기 ///////////////// 
+					OutputStream os=new FileOutputStream(rlFileNm);
+					byte[] bytes = upload.getBytes();
+					os.write(bytes);
+					os.flush();
+					os.close();
+					///////////////// 서버에 파일쓰기 /////////////////
+					StringBuffer bf = request.getRequestURL();
+					int lastIndex = bf.indexOf("/v1/photoUpload");
+					String serverUrl = bf.substring(0,lastIndex);
+					
+					String domain = request.getHeader("referer");//request.getRequestURL().toString();
+					
+					domain = domain.replace("http://", "");
+					domain = domain.substring(0, domain.indexOf("/"));
+					
+					String sFileInfo = serverUrl + File.separator + attach_path +realFileNm;
+					printWriter = response.getWriter();
+		            printWriter.println("<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction("
+		                    + CKEditorFuncNum
+		                    + ",'"
+		                    + sFileInfo
+		                    + "','이미지를 업로드 하였습니다.'"
+		                    + ")</script>");
+		            printWriter.flush();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        } finally {
+		            if (printWriter != null) {
+					    printWriter.close();
+					}
+		        }
+		    }
+		    
+		}
 	//단일파일업로드
 	@RequestMapping(value = "/photoUpload", method = RequestMethod.POST)
 	public String photoUpload(HttpServletRequest request, FileVo vo){

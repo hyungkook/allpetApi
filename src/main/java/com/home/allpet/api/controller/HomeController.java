@@ -3,6 +3,7 @@ package com.home.allpet.api.controller;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -76,12 +77,20 @@ public class HomeController {
 		params.put("imageKey", Codes.IMAGE_TYPE_HOSPITAL_INTRO); 	// 병원 소개 이미지
 		ArrayList<HashMap<String, String>> mainImageList = homeService.getImageByKey(params); 
 		
+		// 블로그 정보
+		params.put("boardType", Codes.ELEMENT_HOSPITAL_SITE_BLOG); 	// blog
+		params.put("blogType", Codes.OLD_BOARD_TYPE_RSS); 	// blog
+		String blogSite = homeService.getSite(params);
+		List<Object> blogList = homeService.getBlogList(params);
+		
+		
 		HashMap<String, Object> parameter = new HashMap<String, Object>();
 		parameter.put("hospitalInfo", infoList);
 		parameter.put("baseInfo", baseInfo);
 		parameter.put("hospitalAddress", hospitalAddress);
 		parameter.put("workingTime", workingTimeList);
 		parameter.put("mainImage", mainImageList);
+		parameter.put("blogList", blogList);
 		
 		return parameter;
 	}

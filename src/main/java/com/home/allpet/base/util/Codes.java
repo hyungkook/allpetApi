@@ -22,6 +22,11 @@ public class Codes {
 	public static String HOSPITAL_STATUS_NORMAL = "10001";				//
 	public static String HOSPITAL_STATUS_ABANDONED = "10002";
 	
+	public static String OLD_BOARD_TYPE_RSS = "BOARD_10001";				// RSS 게시판
+	public static String OLD_BOARD_TYPE_IMAGE = "BOARD_10002";				// 이미지 게시판
+	public static String OLD_BOARD_TYPE_NOTICE = "BOARD_10003";			// 공지사항 게시판
+	public static String OLD_BOARD_TYPE_FAQ = "BOARD_10004";				// FAQ 게시판
+	
 	public static String ELEMENT_HOSPITAL_SITE = "HOSPITAL_SITE";
 	public static String ELEMENT_HOSPITAL_SITE_HOMEPAGE = "10001";		// 홈페이지
 	public static String ELEMENT_HOSPITAL_SITE_BLOG = "10002";			// 블로그

@@ -6,6 +6,9 @@ public class FileVo {
 	private MultipartFile Filedata;
 	private String callback;
 	private String callback_func;
+	private String filename;
+    private String CKEditorFuncNum;
+    
 	public MultipartFile getFiledata() {
 		return Filedata;
 	}
@@ -24,4 +27,17 @@ public class FileVo {
 	public void setCallback_func(String callback_func) {
 		this.callback_func = callback_func;
 	}
+	public String getFilename() {
+		return filename;
+	}
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+	public String getCKEditorFuncNum() {
+		return CKEditorFuncNum;
+	}
+	public void setCKEditorFuncNum(String cKEditorFuncNum) {
+		CKEditorFuncNum = cKEditorFuncNum;
+	}
+	
 }
