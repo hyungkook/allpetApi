@@ -118,7 +118,7 @@ public class XMLParserUtil {
 		
 		Document document = null;
 		try {
-			System.out.println(strXML.toString());
+//			System.out.println(strXML.toString());
 			document = _docBuilder.parse(new InputSource(
 					new java.io.StringReader(strXML.toString())));
 		} catch (SAXException e) {

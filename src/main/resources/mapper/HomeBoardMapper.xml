@@ -20,6 +20,7 @@
 		where  	board_type = #{boardType}
 		and		board_ssid = #{boardSsid}
 		and		deleteYn = 'N'
+		ORDER by board_Seq DESC
 		<if test="pageNum != null and !pageNum.equals('')">
 		LIMIT ${pageNum}, ${pageCon}
 		</if>
