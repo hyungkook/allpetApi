@@ -7,7 +7,6 @@
  <!-- <logger name="org.apache.zookeeper.ClientCnxn" level="ERROR" />
  <logger name="kafka.consumer.ZookeeperConsumerConnecto" level="ERROR" /> -->
  <logger name="java.sql" level="ERROR" />
- <logger name="com.kt.iot.open" level="DEBUG" />
  <logger name="org.springframework" level="ERROR" />
  
 <appender name="API_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -40,5 +39,5 @@
         </encoder>
     </appender>
 
-    <logger name="com.kt.iot" level="DEBUG" appender-ref="API_APPENDER"/>
+    <logger name="com.home.allpet" level="DEBUG" appender-ref="API_APPENDER"/>
 </configuration>

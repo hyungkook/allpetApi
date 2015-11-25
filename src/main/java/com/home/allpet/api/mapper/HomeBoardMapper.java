@@ -8,7 +8,7 @@ import com.home.allpet.api.model.BoardVo;
 
 public interface HomeBoardMapper {
 
-	public void insertBoard(BoardVo boardVo);
+	public int insertBoard(BoardVo boardVo);
 	public void updateBoard(BoardVo boardVo);
 	public List<BoardVo> getBoardList(Map<String, Object> param);
 	public int getBoardListTotalCnt(Map<String, Object> param);

@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Iterator;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,10 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.home.allpet.api.model.FileVo;
+import com.home.allpet.api.model.UploadedFile;
 
 @RestController
 @RequestMapping("/v1")
@@ -184,5 +189,36 @@ public class FileController {
 			e.printStackTrace();
 		}
 	}
+	
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	   public @ResponseBody String upload(MultipartHttpServletRequest request, HttpServletResponse response) {                 
+		
+		String saveDirectory = "/resource/";
+	     //0. notice, we have used MultipartHttpServletRequest
+	 
+	     //1. get the files from the request object
+	     Iterator<String> itr =  request.getFileNames();
+	 
+	     MultipartFile mpf = request.getFile(itr.next());
+	     
+	     UploadedFile ufile =  new UploadedFile();
+	     try {
+	                //just temporary save file info into ufile
+	        ufile.length = mpf.getBytes().length;
+	        ufile.bytes= mpf.getBytes();
+	        ufile.type = mpf.getContentType();
+	        ufile.name = mpf.getOriginalFilename();
+	        File file = new File(saveDirectory + ufile.name);
+	        if( !file.getParentFile().exists() ){
+	        	file.getParentFile().mkdirs();
+	        }
+	        mpf.transferTo(file);
+	        return file.getAbsolutePath().toString();
+	    } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    }
+	     return null;
+	  }
 
 }

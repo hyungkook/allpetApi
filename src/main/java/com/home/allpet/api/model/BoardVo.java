@@ -2,6 +2,7 @@ package com.home.allpet.api.model;
 
 import java.sql.Date;
 
+
 public class BoardVo {
 
 	Long boardSeq;				// 게시물 고유번호
@@ -10,6 +11,7 @@ public class BoardVo {
 	String email;					// 이메일
 	String title;					// 제목
 	String content;				// 내용
+	Date eduDate;				// 교육일
 	Date regDate;				// 등록일
 	int rcount;					// 조회수
 	int masterSeq;				// 원본 고유번호
@@ -54,6 +56,13 @@ public class BoardVo {
 	}
 	public void setContent(String content) {
 		this.content = content;
+	}
+	
+	public Date getEduDate() {
+		return eduDate;
+	}
+	public void setEduDate(Date eduDate) {
+		this.eduDate = eduDate;
 	}
 	public Date getRegDate() {
 		return regDate;

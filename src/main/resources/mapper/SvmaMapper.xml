@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.home.allpet.api.mapper.SvmaMapper">
+	<select id="getBoardList" parameterType="Map" resultType="com.home.allpet.api.model.BoardVo">
+		select 
+			board_Seq,
+			username,
+			passwd,
+			email,
+			title,
+			content,
+			date_format(edu_date,'%Y-%m-%d') as edu_date,
+			date_format(reg_date,'%Y-%m-%d') as reg_date,
+			rcount,
+			master_Seq,
+			reply_num,
+			step,
+			board_ssid,
+			board_type 
+		from DB_ALLPET.tb_board_svma
+		where  	board_type = #{boardType}
+		and		board_ssid = #{boardSsid}
+		and		deleteYn = 'N'
+		ORDER by board_Seq DESC
+		<if test="pageNum != null and !pageNum.equals('')">
+		LIMIT ${pageNum}, ${pageCon}
+		</if>
+	</select>
+	<select id="getBoardListTotalCnt" parameterType="Map" resultType="int">
+		select
+			count('x') 
+		from DB_ALLPET.tb_board_svma
+		where  	board_type = #{boardType}
+		and		board_ssid = #{boardSsid}
+		and		deleteYn = 'N'
+	</select>
+	<select id="getEduList" parameterType="Map" resultType="com.home.allpet.api.model.BoardVo">
+		select 
+			board_Seq,
+			username,
+			passwd,
+			email,
+			title,
+			content,
+			date_format(edu_date,'%Y-%m-%d') as edu_date,
+			date_format(reg_date,'%Y-%m-%d') as reg_date,
+			rcount,
+			master_Seq,
+			reply_num,
+			step,
+			board_ssid,
+			board_type 
+		from DB_ALLPET.tb_board_svma
+		where  	board_type = #{boardType}
+		and		board_ssid = #{boardSsid}
+		and		deleteYn = 'N'
+		and		edu_date > now()
+		ORDER by board_Seq DESC
+	</select>
+	<select id="getBoardByBoardSeq" parameterType="Long" resultType="com.home.allpet.api.model.BoardVo">
+		select
+			*
+		from DB_ALLPET.tb_board_svma
+		where  	board_Seq = #{boardSeq}
+	</select>
+	<select id="getEduUserList" parameterType="Map" resultType="com.home.allpet.api.model.SvmaEduUserVo">
+		select
+			*
+		from DB_ALLPET.tb_board_svma_edu
+		where  	parentBoardSeq = #{parentBoardSeq}
+	</select>
+	<insert id="insertBoard" parameterType="com.home.allpet.api.model.BoardVo">
+    	INSERT INTO DB_ALLPET.tb_board_svma 
+    		(
+	    		username,
+				passwd,
+				email,
+				title,
+				content,
+				edu_date,
+				reg_date,
+				rcount,
+				master_Seq,
+				reply_num,
+				step,
+				board_ssid,
+				board_type
+    		)
+    	VALUES 
+    		( 	
+    			#{username},	
+				#{passwd},		
+				#{email},		
+				#{title},		
+				#{content},		
+				#{eduDate}, 	
+				now(), 	
+				#{rcount},			
+				#{masterSeq},		
+				#{replyNum},		
+				#{step},			
+				#{boardSsid},	
+				#{boardType}
+    		)
+    </insert>
+    <insert id="insertEduUser" parameterType="com.home.allpet.api.model.SvmaEduUserVo">
+    INSERT INTO DB_ALLPET.tb_board_svma_edu 
+    		(
+				parentBoardSeq ,
+				userType ,
+				userNameKo ,
+				userNameEn ,
+				userCreditId ,
+				hospitalName ,
+				hospitalAddr ,
+				phoneNo ,
+				reg_date 
+    		)
+    	VALUES 
+    		( 	
+    			#{parentBoardSeq},	
+    			#{userType},	
+				#{userNameKo},		
+				#{userNameEn},		
+				#{userCreditId},		
+				#{hospitalName},		
+				#{hospitalAddr}, 	
+				#{phoneNo}, 	
+				now()
+   			)
+    </insert>
+    
+    <update id="updateBoard" parameterType="com.home.allpet.api.model.BoardVo" >
+        update DB_ALLPET.tb_board
+        	set title = #{title}
+        	<if test="content != null and !content.equals('')">
+        		, content = #{content}
+			</if>
+        	<if test="username != null and !username.equals('')">
+        		, username = #{username}
+			</if>
+        	<if test="passwd != null and !passwd.equals('')">
+        		, passwd = #{passwd}
+			</if>
+        	<if test="email != null and !email.equals('')">
+        		, email = #{email}
+			</if>
+        	<if test="eduDate != null and !eduDate.equals('')">
+        		, eduDate = #{eduDate}
+			</if>
+        where  	board_Seq = #{boardSeq}
+    </update>
+    <update id="increaseRCount" parameterType="Long" >
+        update DB_ALLPET.tb_board_svma
+        	set rcount = rcount + 1
+        where  	board_Seq = #{boardSeq}
+    </update>
+    
+    <update id="deleteBoard" parameterType="Long" >
+        update DB_ALLPET.tb_board_svma
+        	set deleteYn = 'Y'
+        where  	board_Seq = #{boardSeq}
+    </update>
+    
+    <select id="svmaUserList" parameterType="Map" resultType="com.home.allpet.api.model.SvmaEduUserVo">
+		select
+			credit_id as "userCreditId",
+			user_name as "userNameKo",
+			user_type as "userType",
+			user_type_desc as "userTypeDesc"
+		from DB_ALLPET.t_svma_user
+		<if test="searchPhrase != null and searchPhrase != '' " >
+			where  (credit_id like CONCAT('%',#{searchPhrase},'%')
+			or user_name like CONCAT('%',#{searchPhrase},'%') )
+		</if>
+		ORDER BY credit_id asc
+		<if test="current > 0" >
+			LIMIT ${limit}
+		</if>
+	</select>
+    <select id="svmaUserListCnt" parameterType="map" resultType="int">
+		select
+			count('x')
+		from DB_ALLPET.t_svma_user
+		<if test="searchPhrase != null and searchPhrase != '' " >
+			where  (credit_id like CONCAT('%',#{searchPhrase},'%')
+			or user_name like CONCAT('%',#{searchPhrase},'%') )
+		</if>
+	</select>
+    <select id="svmaLoginCheck" parameterType="com.home.allpet.api.model.SvmaEduUserVo" resultType="com.home.allpet.api.model.SvmaEduUserVo">
+		select
+			credit_id as "userCreditId",
+			user_name as "userNameKo",
+			user_type as "userType",
+			user_type_desc as "userTypeDesc"
+		from DB_ALLPET.t_svma_user
+		where credit_id = #{userCreditId}
+		and user_name = #{userNameKo}
+	</select>
+	<insert id="insertSvmaUser" parameterType="com.home.allpet.api.model.SvmaEduUserVo">
+    INSERT INTO DB_ALLPET.t_svma_user 
+    		(
+				credit_id ,
+				user_name ,
+				user_type ,
+				user_type_desc ,
+				reg_date 
+    		)
+    	VALUES 
+    		( 	
+    			#{userCreditId},	
+    			#{userNameKo},	
+				#{userType},		
+				#{userTypeDesc},		
+				now()
+   			)
+    </insert>
+    <delete id="deleteSvmaUser" parameterType="com.home.allpet.api.model.SvmaEduUserVo">
+    	DELETE FROM  DB_ALLPET.t_svma_user 
+    	where credit_id = #{userCreditId}
+    </delete>
+</mapper>

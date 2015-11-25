@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.home.allpet.api.mapper.HomeBoardMapper;
 import com.home.allpet.api.model.BoardVo;
+import com.home.allpet.api.model.UploadedFile;
 
 @Service
 @Transactional
@@ -47,6 +48,10 @@ public class HomeBoardService {
 		if( parameter.containsKey("step")){
 			boardVo.setStep((int)parameter.get("step"));
 		}
+		if( parameter.containsKey("file")){ 
+			String path = (String)parameter.get("file");
+			System.out.println("path = " + path);
+		}
 		
 		if( "edit".equalsIgnoreCase(viewType)){
 			Object tempBoardSeq = parameter.get("boardSeq");
@@ -59,7 +64,8 @@ public class HomeBoardService {
 			boardVo.setBoardSeq(boardSeq);
 			homeBoardMapper.updateBoard(boardVo);	
 		}else{
-			homeBoardMapper.insertBoard(boardVo);	
+			int seq = homeBoardMapper.insertBoard(boardVo);
+			System.out.println("seq = " + seq);
 		}
 		
 		return null;
